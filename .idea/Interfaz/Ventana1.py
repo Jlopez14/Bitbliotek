@@ -10,14 +10,14 @@ class MyApp(App):
         layout = RelativeLayout()
 
         # Agregar la imagen de fondo
-        background = Image(source='C:\\Users\\lopez.lujos\\Desktop\\ProyectoPython\\fondointro.jpg', allow_stretch=True, keep_ratio=False, pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        background = Image(source='fondointro.jpg', allow_stretch=True, keep_ratio=False, pos_hint={'center_x': 0.5, 'center_y': 0.5})
         layout.add_widget(background)
 
         # Centrar los demás elementos
         center_layout = RelativeLayout(size_hint=(None, None), size=(300, 200), pos_hint={'center_x': 0.5, 'center_y': 0.5})
 
         # Agregar una imagen principal con un tamaño específico
-        img = Image(source='C:\\Users\\lopez.lujos\\Desktop\\ProyectoPython\\bibliotekBuena.png', size=(2000, 2000), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.6})  # Ajuste en 'center_y'
+        img = Image(source='bibliotekBuena.png', size=(2000, 2000), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.6})  # Ajuste en 'center_y'
         center_layout.add_widget(img)
 
         # Espaciado entre la imagen y los demás elementos

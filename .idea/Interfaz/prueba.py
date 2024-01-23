@@ -3,10 +3,10 @@ from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.image import Image
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from kivy.config import Config
 
 class MyApp(App):
     def build(self):
+        # Crear el diseño principal
         layout = RelativeLayout()
 
         # Agregar la imagen de fondo
@@ -14,21 +14,21 @@ class MyApp(App):
         layout.add_widget(background)
 
         # Centrar los demás elementos
-        center_layout = RelativeLayout(size_hint=(None, None), size=(300, 2500), pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        center_layout = RelativeLayout(size_hint=(None, None), size=(500, 400), pos_hint={'center_x': 0.5, 'center_y': 0.5})
 
         # Agregar una imagen principal con un tamaño específico
-        img = Image(source='bibliotekBuena.png', size=(2000, 2000), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.6})
+        img = Image(source='bibliotekBuena.png', size=(400, 400), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.6})  # Ajuste en 'center_y'
         center_layout.add_widget(img)
 
         # Espaciado entre la imagen y los demás elementos
-        img_spacing = 0.02
+        img_spacing = 0.01
 
         # Campo de usuario
         user_input = TextInput(hint_text='Usuario', multiline=False, size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing}, size=(300, 40))
         center_layout.add_widget(user_input)
 
         # Espaciado entre el campo de usuario y el campo de contraseña
-        input_spacing = 0.02
+        input_spacing = 0.25
 
         # Campo de contraseña
         password_input = TextInput(hint_text='Contraseña', multiline=False, password=True, size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing - input_spacing}, size=(300, 40))
