@@ -22,11 +22,11 @@ class MyApp(App):
         center_layout = RelativeLayout(size_hint=(None, None), size=(dp(300), dp(300)), pos_hint={'center_x': 0.5, 'center_y': 0.5})
 
         # Agregar la imagen de fondo
-        background = Image(source='fondointro.jpg', allow_stretch=True, keep_ratio=False, pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        background = Image(source='verdesitofondito.jpg', allow_stretch=True, keep_ratio=False, pos_hint={'center_x': 0.5, 'center_y': 0.5})
         layout.add_widget(background)
 
         # Agregar una imagen principal con un tamaño específico
-        img = Image(source='bibliotekBuena.png', size=(dp(350), dp(350)), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.80})  # Ajuste en 'center_y'
+        img = Image(source='biblioteknegro.png', size=(dp(350), dp(350)), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.80})  # Ajuste en 'center_y'
         center_layout.add_widget(img)
 
         # Espaciado entre la imagen y los demás elementos

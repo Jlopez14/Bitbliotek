@@ -31,11 +31,11 @@ class MyApp(App):
         center_layout = RelativeLayout(size_hint=(None, None), size=(dp(300), dp(300)), pos_hint={'center_x': 0.5, 'center_y': 0.5})
 
         # Agregar la imagen de fondo
-        background = Image(source='fondointro.jpg', allow_stretch=True, keep_ratio=False, pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        background = Image(source='fondoApp.jpg', allow_stretch=True, keep_ratio=False, pos_hint={'center_x': 0.5, 'center_y': 0.5})
         layout.add_widget(background)
 
         # Agregar una imagen principal con un tamaño específico
-        img = Image(source='bibliotekBuena.png', size=(dp(320), dp(320)), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 + total_spacing / 2})  # Ajuste en 'center_y'
+        img = Image(source='bitbliotek.png', size=(dp(320), dp(320)), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 + total_spacing / 2})  # Ajuste en 'center_y'
         center_layout.add_widget(img)
 
         # Campo de usuario
