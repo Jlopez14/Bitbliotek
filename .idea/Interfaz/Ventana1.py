@@ -21,7 +21,7 @@ class MyApp(App):
         center_layout.add_widget(img)
 
         # Espaciado entre la imagen y los demás elementos
-        img_spacing = 0
+        img_spacing = 0.01
 
         # Campo de usuario
         user_input = TextInput(hint_text='Usuario', multiline=False, size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing}, size=(300, 40))

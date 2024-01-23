@@ -10,25 +10,25 @@ class MyApp(App):
         layout = RelativeLayout()
 
         # Agregar la imagen de fondo
-        background = Image(source='C:\\Users\\lopez.lujos\\Desktop\\ProyectoPython\\fondointro.jpg', allow_stretch=True, keep_ratio=False, pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        background = Image(source='fondointro.jpg', allow_stretch=True, keep_ratio=False, pos_hint={'center_x': 0.5, 'center_y': 0.5})
         layout.add_widget(background)
 
         # Centrar los demás elementos
         center_layout = RelativeLayout(size_hint=(None, None), size=(300, 2500), pos_hint={'center_x': 0.5, 'center_y': 0.5})
 
         # Agregar una imagen principal con un tamaño específico
-        img = Image(source='C:\\Users\\lopez.lujos\\Desktop\\ProyectoPython\\bibliotekBuena.png', size=(2000, 2000), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.6})
+        img = Image(source='bibliotekBuena.png', size=(2000, 2000), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.6})
         center_layout.add_widget(img)
 
         # Espaciado entre la imagen y los demás elementos
-        img_spacing = 0
+        img_spacing = 0.02
 
         # Campo de usuario
         user_input = TextInput(hint_text='Usuario', multiline=False, size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing}, size=(300, 40))
         center_layout.add_widget(user_input)
 
         # Espaciado entre el campo de usuario y el campo de contraseña
-        input_spacing = 0.25
+        input_spacing = 0.02
 
         # Campo de contraseña
         password_input = TextInput(hint_text='Contraseña', multiline=False, password=True, size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing - input_spacing}, size=(300, 40))
