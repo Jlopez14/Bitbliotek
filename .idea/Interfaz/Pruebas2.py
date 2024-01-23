@@ -18,6 +18,15 @@ class MyApp(App):
         except Exception as e:
             print(f"No se pudo configurar la ventana sin bordes: {e}")
 
+        # Espaciado entre la imagen y los demás elementos
+        img_spacing = 0.2
+
+        # Espaciado entre el campo de usuario y el campo de contraseña
+        input_spacing = 0.19
+
+        # Calcular el espacio total requerido
+        total_spacing = img_spacing + 2 * input_spacing
+
         # Centrar los demás elementos
         center_layout = RelativeLayout(size_hint=(None, None), size=(dp(300), dp(300)), pos_hint={'center_x': 0.5, 'center_y': 0.5})
 
@@ -26,29 +35,23 @@ class MyApp(App):
         layout.add_widget(background)
 
         # Agregar una imagen principal con un tamaño específico
-        img = Image(source='bibliotekBuena.png', size=(dp(350), dp(350)), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.80})  # Ajuste en 'center_y'
+        img = Image(source='bibliotekBuena.png', size=(dp(320), dp(320)), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 + total_spacing / 2})  # Ajuste en 'center_y'
         center_layout.add_widget(img)
 
-        # Espaciado entre la imagen y los demás elementos
-        img_spacing = 0.40
-
         # Campo de usuario
-        user_input = TextInput(hint_text='Usuario', multiline=False, size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing}, size=(dp(300), dp(40)))
+        user_input = TextInput(hint_text='Usuario', multiline=False, text_align='center', size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing + total_spacing / 2}, size=(dp(300), dp(40)))
         center_layout.add_widget(user_input)
 
-        # Espaciado entre el campo de usuario y el campo de contraseña
-        input_spacing = 0.19
-
         # Campo de contraseña
-        password_input = TextInput(hint_text='Contraseña', multiline=False, password=True, size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing - input_spacing}, size=(dp(300), dp(40)))
+        password_input = TextInput(hint_text='Contraseña', multiline=False, password=True, text_align='center', size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing - input_spacing + total_spacing / 2}, size=(dp(300), dp(40)))
         center_layout.add_widget(password_input)
 
         # Botón de aceptar
-        btn_accept = Button(text='Aceptar', on_press=self.on_button_press, size_hint=(None, None), pos_hint={'center_x': 0.25, 'center_y': 0.5 - img_spacing - 2 * input_spacing}, size=(dp(150), dp(40)))
+        btn_accept = Button(text='Aceptar', on_press=self.on_button_press, size_hint=(None, None), pos_hint={'center_x': 0.25, 'center_y': 0.5 - img_spacing - 2 * input_spacing + total_spacing / 2}, size=(dp(150), dp(40)))
         center_layout.add_widget(btn_accept)
 
         # Botón de registrar
-        btn_register = Button(text='Registrar', on_press=self.on_register_press, size_hint=(None, None), pos_hint={'center_x': 0.75, 'center_y': 0.5 - img_spacing - 2 * input_spacing}, size=(dp(150), dp(40)))
+        btn_register = Button(text='Registrar', on_press=self.on_register_press, size_hint=(None, None), pos_hint={'center_x': 0.75, 'center_y': 0.5 - img_spacing - 2 * input_spacing + total_spacing / 2}, size=(dp(150), dp(40)))
         center_layout.add_widget(btn_register)
 
         # Botón de salir
