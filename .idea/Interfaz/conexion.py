@@ -36,11 +36,6 @@ def obtener_contrasena(usuario):
         print(f'Error de conexión: {err}')
         return None
 
-# Ejemplo de uso
-usuario_buscado = 'a@a.com'
-contrasena_obtenida = obtener_contrasena(usuario_buscado)
 
-if contrasena_obtenida is not None:
-    # Indica aqui la accion a hacer para comprobar la contraseña con la contraseña obtenida
-else:
-    # Indicar aqui el proceso contrario
+
+
