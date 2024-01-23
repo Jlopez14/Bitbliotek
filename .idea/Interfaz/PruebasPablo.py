@@ -1,108 +1,87 @@
-# Importar las bibliotecas necesarias de Kivy
 from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-from kivy.uix.button import Button
+from kivy.metrics import dp
+from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.image import Image
 from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from conexion import obtener_contrasena
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 
 
-import mysql.connector
-
-def obtener_contrasena(usuario):
-    try:
-        # Conectar a MySQL
-        connection = mysql.connector.connect(
-            host='tu_host_mysql',
-            user='tu_usuario_mysql',
-            password='tu_contrasena_mysql',
-            database='tu_base_de_datos'
-        )
-
-        # Crear un cursor para ejecutar consultas
-        cursor = connection.cursor()
-
-        # Consulta SELECT para obtener la contraseña de un usuario específico
-        query = "SELECT contrasena FROM usuarios WHERE nombre_usuario = %s"
-        cursor.execute(query, (usuario,))
-
-        # Obtener el resultado de la consulta
-        resultado = cursor.fetchone()
-
-        # Cerrar el cursor y la conexión
-        cursor.close()
-        connection.close()
-
-        if resultado:
-            # Si se encuentra el usuario, retornar la contraseña
-            return resultado[0]
-        else:
-            # Si el usuario no se encuentra, retornar None
-            return None
-
-    except mysql.connector.Error as err:
-        # Manejar errores de conexión
-        print(f'Error de conexión: {err}')
-        return None
-
-# Ejemplo de uso
-usuario_buscado = 'nombre_de_usuario'
-contrasena_obtenida = obtener_contrasena(usuario_buscado)
-
-if contrasena_obtenida is not None:
-    print(f'La contraseña de {usuario_buscado} es: {contrasena_obtenida}')
-else:
-    print(f'No se encontró el usuario {usuario_buscado}')
 
 
-# Importar la biblioteca para la conexión a MySQL
-import mysql.connector
 
 class MyApp(App):
+
+    def mostrar_popup(self, mensaje):
+        popup = Popup(title='Error de Autenticación',
+                      content=Label(text=mensaje),
+                      size_hint=(None, None), size=(400, 200))
+        popup.open()
+
+
     def build(self):
-        # Crear un diseño en caja vertical
-        layout = BoxLayout(orientation='vertical', spacing=10, padding=10)
+        # Crear el diseño principal
+        layout = RelativeLayout()
 
-        # Crear campos de entrada
-        self.username_input = TextInput(hint_text='Usuario')
-        self.password_input = TextInput(hint_text='Contraseña', password=True)
+        # Agregar la imagen de fondo
+        background = Image(source='fondointro.jpg', allow_stretch=True, keep_ratio=False, pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        layout.add_widget(background)
 
-        # Crear un botón para realizar la conexión
-        connect_button = Button(text='Conectar a MySQL', on_press=self.connect_to_mysql)
+        # Centrar los demás elementos
+        center_layout = RelativeLayout(size_hint=(None, None), size=(dp(500), dp(400)), pos_hint={'center_x': 0.5, 'center_y': 0.5})
 
-        # Crear una etiqueta para mostrar el resultado de la conexión
-        self.result_label = Label(text='Esperando conexión...')
+        # Agregar una imagen principal con un tamaño específico
+        img = Image(source='bibliotekBuena.png', size=(dp(400), dp(400)), size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.6})  # Ajuste en 'center_y'
+        center_layout.add_widget(img)
 
-        # Agregar los widgets al diseño
-        layout.add_widget(self.username_input)
-        layout.add_widget(self.password_input)
-        layout.add_widget(connect_button)
-        layout.add_widget(self.result_label)
+        # Espaciado entre la imagen y los demás elementos
+        img_spacing = 0.01
+
+        # Campo de usuario
+        user_input = TextInput(hint_text='Usuario', multiline=False, size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing}, size=(dp(300), dp(40)))
+        center_layout.add_widget(user_input)
+
+        # Espaciado entre el campo de usuario y el campo de contraseña
+        input_spacing = 0.25
+
+        # Campo de contraseña
+        password_input = TextInput(hint_text='Contraseña', multiline=False, password=True, size_hint=(None, None), pos_hint={'center_x': 0.5, 'center_y': 0.5 - img_spacing - input_spacing}, size=(dp(300), dp(40)))
+        center_layout.add_widget(password_input)
+
+        # Botón de aceptar
+        btn_accept = Button(text='Aceptar', on_press=self.on_button_press, size_hint=(None, None), pos_hint={'center_x': 0.4, 'center_y': 0.5 - img_spacing - 2 * input_spacing}, size=(dp(150), dp(40)))
+        center_layout.add_widget(btn_accept)
+
+        # Botón de registrar
+        btn_register = Button(text='Registrar', on_press=self.on_register_press, size_hint=(None, None), pos_hint={'center_x': 0.6, 'center_y': 0.5 - img_spacing - 2 * input_spacing}, size=(dp(150), dp(40)))
+        center_layout.add_widget(btn_register)
+
+        layout.add_widget(center_layout)
 
         return layout
 
-    def connect_to_mysql(self, instance):
-        # Obtener datos del usuario y contraseña
-        user = self.username_input.text
-        password = self.password_input.text
+    def on_button_press(self, instance):
+        # Acción a realizar cuando se presiona el botón "Aceptar"
+        user_text = instance.parent.children[3].text  # Obtener el texto del campo de usuario
+        password_text = instance.parent.children[2].text  # Obtener el texto del campo de contraseña
 
-        # Intentar realizar la conexión a MySQL
-        try:
-            connection = mysql.connector.connect(
-                host='localhost',
-                user=user,
-                password=password,
-                database='bitbliotek'
-            )
+        contrasenna=obtener_contrasena(user_text)
 
-            # Actualizar la etiqueta con el resultado
-            self.result_label.text = 'Conexión exitosa.'
+        if password_text!=contrasenna:
+            self.mostrar_popup("Contraseña incorrecta")
 
-            # Aquí podrías realizar más operaciones en la base de datos si es necesario.
 
-        except mysql.connector.Error as err:
-            # Manejar errores de conexión
-            self.result_label.text = f'Error de conexión: {err}'
 
-# Instanciar y ejecutar la aplicación
+    def on_register_press(self, instance):
+        # Acción a realizar cuando se presiona el botón "Registrar"
+        user_text = instance.parent.children[2].text  # Obtener el texto del campo de usuario
+        password_text = instance.parent.children[3].text  # Obtener el texto del campo de contraseña
+
+        # Puedes realizar alguna acción con los datos, como imprimirlos en la consola
+        print(f'Usuario: {user_text}, Contraseña: {password_text}, Acción: Registrar')
+
+
 if __name__ == '__main__':
     MyApp().run()
