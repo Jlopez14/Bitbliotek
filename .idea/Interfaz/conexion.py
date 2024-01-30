@@ -1,5 +1,4 @@
 import mysql.connector
-
 def obtener_contrasena(usuario):
     try:
         # Conectar a MySQL

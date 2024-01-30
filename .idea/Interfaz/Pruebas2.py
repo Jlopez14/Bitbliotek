@@ -8,7 +8,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.core.window import Window
-
+from conexion import obtener_contrasena
 class RegistrationWindow(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -44,7 +44,14 @@ class RegistrationWindow(BoxLayout):
         # Aquí podrías agregar lógica adicional, como almacenar la información en una base de datos, etc.
 
 class MyApp(App):
+    def mostrar_popup(self, mensaje):
+        popup = Popup(title='Error de Autenticación',
+                      content=Label(text=mensaje),
+                      size_hint=(None, None), size=(400, 200))
+        popup.open()
+
     def build(self):
+
         # Crear el diseño principal
         layout = RelativeLayout()
 
@@ -108,8 +115,10 @@ class MyApp(App):
         user_text = instance.parent.children[3].text  # Obtener el texto del campo de usuario
         password_text = instance.parent.children[2].text  # Obtener el texto del campo de contraseña
 
-        # Puedes realizar alguna acción con los datos, como imprimirlos en la consola
-        print(f'Usuario: {user_text}, Contraseña: {password_text}, Acción: Aceptar')
+        contrasenna=obtener_contrasena(user_text)
+
+        if password_text!=contrasenna:
+            self.mostrar_popup("Contraseña incorrecta")
 
     def on_exit_press(self, instance):
         # Acción a realizar cuando se presiona el botón "Salir"
