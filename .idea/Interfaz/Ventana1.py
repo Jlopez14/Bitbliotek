@@ -22,6 +22,7 @@ class RegistrationWindow(BoxLayout):
         self.username_input = TextInput(hint_text='Ingrese su nombre de usuario', multiline=False, size_hint=(None, None), height=dp(40))
         self.add_widget(self.username_input)
 
+
         self.add_widget(Label(text='Correo electrónico:', size_hint=(None, None), height=dp(30)))
         self.email_input = TextInput(hint_text='Ingrese su correo electrónico', multiline=False, size_hint=(None, None), height=dp(40))
         self.add_widget(self.email_input)
