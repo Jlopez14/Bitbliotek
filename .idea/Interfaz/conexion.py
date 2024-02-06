@@ -36,47 +36,53 @@ def obtener_contrasena(usuario):
         return None
 
 
-    def obtener_contrasena(usuario):
-        try:
-            # Conectar a MySQL
-            connection = mysql.connector.connect(
-                host='localhost',
-                user='root',
-                password='pablo2',
-                database='bitbliotek'
-            )
 
-            # Crear un cursor para ejecutar consultas
-            cursor = connection.cursor()
+def registrar(nombre, apellidos, correo, contrasenna):
+    # Configuración de la conexión a la base de datos
+    config = {
+        'host': 'localhost',
+        'user': 'root',
+        'password': 'pablo2',
+        'database': 'bitbliotek'
+    }
 
-            # Consulta SELECT para obtener la contraseña de un usuario específico
-            query = "SELECT contrasenna FROM usuarios WHERE email = %s"
-            cursor.execute(query, (usuario,))
+    try:
+        # Establecer conexión a la base de datos
+        conexion = mysql.connector.connect(**config)
 
-            # Obtener el resultado de la consulta
-            resultado = cursor.fetchone()
+        # Crear un objeto cursor para ejecutar consultas SQL
+        cursor = conexion.cursor()
 
-            # Cerrar el cursor y la conexión
-            cursor.close()
-            connection.close()
+        # Ejemplo de INSERT INTO
+        inombre = nombre
+        iapellidos = apellidos
+        icorreo = correo
+        icontrasenna = contrasenna
 
-            if resultado:
-                # Si se encuentra el usuario, retornar la contraseña
-                return resultado[0]
-            else:
-                # Si el usuario no se encuentra, retornar None
-                return None
+        # Sentencia SQL con placeholders para evitar SQL injection
+        sql_insert = "INSERT INTO usuarios (nombre, apellidos, email, contrasenna) VALUES (%s, %s, %s, %s)"
 
-        except mysql.connector.Error as err:
-            # Manejar errores de conexión
-            print(f'Error de conexión: {err}')
-            return None
+        # Datos a insertar
+        datos = (inombre, iapellidos, icorreo, icontrasenna)
+
+        # Ejecutar la consulta
+        cursor.execute(sql_insert, datos)
+
+        # Confirmar la transacción
+        conexion.commit()
+
+        print(f"Registro insertado correctamente en la tabla 'usuarios'")
+    except mysql.connector.Error as err:
+        # Manejar errores
+        print(f"Error: {err}")
+    finally:
+        # Cerrar cursor y conexión
+        cursor.close()
+        conexion.close()
 
 
-
-
-def registrar(nombre,apellidos,correo,contrasenna):
-
+def obtenerID(usuario):
+    try:
         # Conectar a MySQL
         connection = mysql.connector.connect(
             host='localhost',
@@ -85,37 +91,29 @@ def registrar(nombre,apellidos,correo,contrasenna):
             database='bitbliotek'
         )
 
-# Establecer conexión a la base de datos
-conexion = mysql.connector.connect(**config)
+        # Crear un cursor para ejecutar consultas
+        cursor = connection.cursor()
 
-# Crear un objeto cursor para ejecutar consultas SQL
-cursor = conexion.cursor()
+        # Consulta SELECT para obtener la contraseña de un usuario específico
+        query = "SELECT idusuarios FROM usuarios WHERE email = %s"
+        cursor.execute(query, (usuario,))
 
-# Ejemplo de INSERT INTO
-inombre=nombre
-iapellidos=apellidos
-icorreo=correo
-icontrasenna=contrasenna
+        # Obtener el resultado de la consulta
+        resultado = cursor.fetchone()
 
-# Sentencia SQL con placeholders para evitar SQL injection
-sql_insert = "INSERT INTO usuarios (nombre,apellidos,email,contrasenna) VALUES (%s, %s, %s, %s)"
+        # Cerrar el cursor y la conexión
+        cursor.close()
+        connection.close()
 
-# Datos a insertar
-datos = (inombre, iapellidos, icorreo , icontrasenna)
+        if resultado:
+            # Si se encuentra el usuario, retornar la contraseña
+            return resultado[0]
+        else:
+            # Si el usuario no se encuentra, retornar None
+            return None
 
-try:
-    # Ejecutar la consulta
-    cursor.execute(sql_insert, datos)
-
-    # Confirmar la transacción
-    conexion.commit()
-
-    print(f"Registro insertado correctamente en la tabla 'tu_tabla'")
-except mysql.connector.Error as err:
-    # Manejar errores
-    print(f"Error: {err}")
-finally:
-    # Cerrar cursor y conexión
-    cursor.close()
-    conexion.close()
+    except mysql.connector.Error as err:
+        # Manejar errores de conexión
+        print(f'Error de conexión: {err}')
+        return None
 
