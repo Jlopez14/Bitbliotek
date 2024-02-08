@@ -175,7 +175,8 @@ class Login(App):
 
         else:
             print("ELSE")
-            Inicio().run()
+            App.get_running_app().stop()
+            Inicio(id=id_usuario).run()
 
     def on_exit_press(self, instance):
         # Acción a realizar cuando se presiona el botón "Cerrar" en la ventana emergente
