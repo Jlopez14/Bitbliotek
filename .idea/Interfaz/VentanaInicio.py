@@ -7,11 +7,8 @@ from kivy.uix.textinput import TextInput
 from kivy.core.window import Window
 from kivy.metrics import dp
 
+
 class Inicio(App):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-
     def build(self):
         Window.fullscreen = 'auto'  # Configura la aplicación para abrirse a pantalla completa
         Window.show_cursor = True   # Muestra el cursor en pantalla completa
@@ -27,7 +24,7 @@ class Inicio(App):
 
 
 
-        # Calcula la posición y el tamaño de la imagen
+            # Calcula la posición y el tamaño de la imagen
         margen_izquierdo = 5  # 5 centímetros desde el margen izquierdo
         margen_superior = Window.height - 4 - 4  # 4 centímetros desde el margen superior
 
@@ -41,10 +38,10 @@ class Inicio(App):
 
         # Imagen
         imagen = Image(source='bibliotekCabecera.png',
-                       allow_stretch=True,
-                       keep_ratio=False,
-                       size_hint=(ancho_imagen_rel, alto_imagen_rel),
-                       pos_hint={'x': margen_izquierdo / Window.width, 'top': 1 - margen_superior / Window.height})
+                    allow_stretch=True,
+                    keep_ratio=False,
+                    size_hint=(ancho_imagen_rel, alto_imagen_rel),
+                    pos_hint={'x': margen_izquierdo / Window.width, 'top': 1 - margen_superior / Window.height})
 
         # BoxLayout vertical para centrar los elementos
         container_layout = BoxLayout(orientation='vertical',
@@ -57,25 +54,25 @@ class Inicio(App):
                                   spacing=10)
 
         # Botones utilizando RelativeLayout
-
+        
         button1 = Button(size_hint=(1/3, 0.7),
-                         background_color=(0.53, 0.86, 0.83, 1),
-                         border=(1, 0, 1, 0),
-                         background_normal='musica.png',  # Nombre de la imagen de fondo normal
-                         background_down='musicaPresionada.png')
-
-        button2 = Button(size_hint=(1/3, 0.7),
-                         background_color=(0.53, 0.86, 0.83, 1),
-                         border=(1, 0, 1, 0),
-                         background_normal='cine.png',  # Nombre de la imagen de fondo normal
-                         background_down='cinePresionado.png')
-
-        button3 = Button(size_hint=(1/3, 0.7),
-                         background_color=(0.53, 0.86, 0.83, 1),
-                         border=(1, 0, 1, 0),
-                         background_normal='libro.png',  # Nombre de la imagen de fondo normal
-                         background_down='libroPresionado.png')
-
+                        background_color=(0.53, 0.86, 0.83, 1),
+                        border=(1, 0, 1, 0),
+                        background_normal='musica.png',  # Nombre de la imagen de fondo normal
+                        background_down='musicaPresionada.png')
+                        
+        button2 = Button(size_hint=(1/3, 0.7),  
+                        background_color=(0.53, 0.86, 0.83, 1),
+                        border=(1, 0, 1, 0),
+                        background_normal='cine.png',  # Nombre de la imagen de fondo normal
+                        background_down='cinePresionado.png')
+                        
+        button3 = Button(size_hint=(1/3, 0.7),  
+                        background_color=(0.53, 0.86, 0.83, 1),
+                        border=(1, 0, 1, 0),
+                        background_normal='libro.png',  # Nombre de la imagen de fondo normal
+                        background_down='libroPresionado.png')
+                        
 
         # Añadir botones al BoxLayout
         button_layout.add_widget(button1)
@@ -111,6 +108,7 @@ class Inicio(App):
     def on_exit_press(self, instance):
         App.get_running_app().stop()
 
-
 if __name__ == '__main__':
-    Inicio().run()  # Puedes cambiar '123' por el valor real de id_usuario
+        Inicio().run()
+
+

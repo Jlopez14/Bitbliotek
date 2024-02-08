@@ -12,6 +12,7 @@ from conexion import obtener_contrasena
 from conexion import obtenerID
 from kivy.uix.widget import Widget
 from conexion import registrar
+from VentanaInicio import Inicio
 
 class RegistrationWindow(BoxLayout):
 
@@ -86,8 +87,13 @@ class RegistrationWindow(BoxLayout):
         App.get_running_app().stop()
         Login().run()
 
+
 #Clase principal donde está la ventana 1
 class Login(App):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.registration_window = None  # Añade una variable para la ventana de registro
+
     def mostrar_popup(self, mensaje):
         popup = Popup(title='Error de Autenticación',
                       content=Label(text=mensaje),
@@ -155,25 +161,26 @@ class Login(App):
         popup.open()
 
     def on_button_press(self, instance):
+        print("Botón presionado")
         # Acción a realizar cuando se presiona el botón "Aceptar"
         user_text = instance.parent.children[3].text  # Obtener el texto del campo de usuario
         password_text = instance.parent.children[2].text  # Obtener el texto del campo de contraseña
 
-        contrasenna=obtener_contrasena(user_text)
-        id=obtenerID(user_text) #Obtiene el ID
 
+        contrasenna = obtener_contrasena(user_text)
+        id_usuario = obtenerID(user_text)  # Obtener el ID del usuario
 
-        App.get_running_app().stop #Cierra la ventana actual
-        Inicio(id).run() #Abre la nueva ventana mandando el ID
-
-        if password_text!=contrasenna:
+        if password_text != contrasenna:
             self.mostrar_popup("Usuario y/o contraseña incorrecta")
 
+        else:
+            print("ELSE")
+            Inicio().run()
 
     def on_exit_press(self, instance):
         # Acción a realizar cuando se presiona el botón "Cerrar" en la ventana emergente
-        if self.popup_instance:
-            self.popup_instance.dismiss()
+        App.get_running_app().stop()
+
 
 if __name__ == '__main__':
     Login().run()
