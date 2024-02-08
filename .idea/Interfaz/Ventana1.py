@@ -84,7 +84,6 @@ class RegistrationWindow(BoxLayout):
             self.mostrar_popup("Los campos no pueden contener espacios en blanco")
         elif len(password) < 6:
             self.mostrar_popup("La contraseña debe tener al menos 6 caracteres")
-
         else:
             registrar(username, lastname, email, password)
             self.mostrar_popup("Usuario registrado correctamente")
