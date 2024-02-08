@@ -174,7 +174,7 @@ class Login(App):
             self.mostrar_popup("Usuario y/o contraseña incorrecta")
 
         else:
-            print("ELSE")
+            print("ELSE ")
             App.get_running_app().stop()
             Inicio(id=id_usuario).run()
 
