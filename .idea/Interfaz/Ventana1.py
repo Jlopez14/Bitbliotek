@@ -73,16 +73,23 @@ class RegistrationWindow(BoxLayout):
 
         if password != repassword:
             self.mostrar_popup("Las contraseñas no coinciden")
-
-        elif username == '' or lastname == '' or email == '' or password == '' or repassword == '':
+        elif not email or '@' not in email:
+            self.mostrar_popup("Ingrese un correo electrónico válido")
+        elif not username or not lastname or not email or not password or not repassword:
             self.mostrar_popup("Por favor complete todos los campos")
+        elif any(char.isdigit() for char in username) or any(char.isdigit() for char in lastname):
+            self.mostrar_popup("Los campos de nombre y apellidos\n"
+                               "no pueden contener números")
+        elif any(char.isspace() for char in username)  or any(char.isspace() for char in email) or any(char.isspace() for char in password):
+            self.mostrar_popup("Los campos no pueden contener espacios en blanco")
+        elif len(password) < 6:
+            self.mostrar_popup("La contraseña debe tener al menos 6 caracteres")
 
         else:
-            registrar(username,lastname,email,password)
+            registrar(username, lastname, email, password)
             self.mostrar_popup("Usuario registrado correctamente")
             App.get_running_app().stop()
             Login().run()
-
     def on_close_press(self, instance):
         App.get_running_app().stop()
         Login().run()
