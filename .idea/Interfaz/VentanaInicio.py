@@ -3,10 +3,12 @@ from kivy.uix.button import Button
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
-from kivy.uix.textinput import TextInput
+from kivy.uix.label import Label
+from kivy.graphics import Color, Rectangle
 from kivy.core.window import Window
 from kivy.metrics import dp
 from conexion import obtenerNombre
+
 
 class Inicio(App):
 
@@ -85,17 +87,40 @@ class Inicio(App):
                              border=(1, 0, 1, 0))
         root_layout.add_widget(exit_button)
 
-        nombre_usuario=obtenerNombre(self.id)
+        nombre_usuario = obtenerNombre(self.id)
         print(self.id)
 
-        # Cuadro de texto en la esquina superior derecha
-        text_input = TextInput(text=str(nombre_usuario),
-                               size_hint=(0.14, 0.09),  # Aumentar el tamaño en un 40%
-                               pos_hint={'top': 0.96, 'right': 0.96},  # Separar 4 centímetros de arriba y del margen derecho
-                               multiline=False,
-                               border=(2, 2, 2, 2))
-        root_layout.add_widget(text_input)
+        # Creamos un RelativeLayout para el Label y el botón adicional
+        label_layout = RelativeLayout(size_hint=(None, None), size=(dp(180), dp(36)), pos_hint={'top': 0.96, 'right': 0.96})
 
+        # Creamos el Label
+        label = Label(text=str(nombre_usuario),
+                      size_hint=(None, None),
+                      size=(dp(144), dp(36)),
+                      pos_hint={'top': 1, 'right': 0.5},
+                      color=(0, 1, 0, 1),  # Color verde brillante
+                      font_size='18sp',
+                      halign='right',
+                      valign='middle',
+                      text_size=(dp(144), None))  # Establecemos el tamaño del texto
+
+        # Agregamos el fondo oscuro al Label
+        with label_layout.canvas.before:
+            Color(0.1, 0.1, 0.1, 1)  # Color gris oscuro casi negro
+            Rectangle(pos=label.pos, size=label.size)
+
+        label_layout.add_widget(label)
+
+        # Creamos el botón adicional con imagen
+        button = Button(size_hint=(None, None),
+                        size=(dp(36), dp(36)),
+                        pos_hint={'right': 1, 'top': 1},
+                        background_normal='cerral.png')  # Ruta de la imagen para el botón
+        button.bind(on_press=self.on_close_press)  # Enlaza el evento de presionar con el método on_close_press
+        label_layout.add_widget(button)
+
+        # Añadimos el RelativeLayout al layout principal
+        root_layout.add_widget(label_layout)
 
         # Añadir el layout centrado al layout principal
         root_layout.add_widget(container_layout)
@@ -105,5 +130,15 @@ class Inicio(App):
     def on_exit_press(self, instance):
         App.get_running_app().stop()
 
+    def on_close_press(self, instance):
+        
+        App.get_running_app().stop()  # Cierra la ventana actual
+
+        # Método para cerrar la ventana actual y volver a la ventana de inicio
+        from Ventana1 import Login
+        login_instance = Login()
+        login_instance.run()
+
+        
 if __name__ == '__main__':
-    Inicio().run(self.id)
+    Inicio().run()
