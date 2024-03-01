@@ -57,13 +57,13 @@ class Inicio(App):
         button2 = Button(size_hint=(1/3, 0.7),
                          background_color=(0.53, 0.86, 0.83, 1),
                          border=(1, 0, 1, 0),
-                         background_normal='cine.png',  # Nombre de la imagen de fondo normal
+                         background_normal='pelicula.png',  # Nombre de la imagen de fondo normal
                          background_down='cinePresionado.png')
 
         button3 = Button(size_hint=(1/3, 0.7),
                          background_color=(0.53, 0.86, 0.83, 1),
                          border=(1, 0, 1, 0),
-                         background_normal='libro.png',  # Nombre de la imagen de fondo normal
+                         background_normal='libros.png',  # Nombre de la imagen de fondo normal
                          background_down='libroPresionado.png')
 
 

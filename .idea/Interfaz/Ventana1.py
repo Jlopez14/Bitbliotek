@@ -51,16 +51,34 @@ class RegistrationWindow(BoxLayout):
         self.add_widget(Label(text='Repite Contraseña:', size_hint=(None, None), height=dp(36), pos_hint={'center_x': 0.5}, font_size=14, bold=True))
         self.password2_input = TextInput(hint_text='Repita su contraseña', multiline=False, password=True, size_hint=(1, None), height=dp(40), pos_hint={'center_x': 0.5})
         self.add_widget(self.password2_input)
-
         # Agregar un espacio vertical
         self.add_widget(Widget(size_hint_y=None, height=dp(20)))
 
         # Agregar botones en la misma línea horizontal
         buttons_layout = BoxLayout(size_hint=(1, None), height=dp(40), spacing=236, pos_hint={'center_x': 0.5})
-        buttons_layout.add_widget(Button(text='Registrar', on_press=self.on_register_press, size_hint=(None, None), height=dp(40)))
 
-        # Agregar el botón "Cerrar" a la derecha y un poco más a la derecha
-        buttons_layout.add_widget(Button(text='Cerrar', on_press=self.on_close_press, size_hint=(None, None), height=dp(40), pos_hint={'right': 1}))
+        # Botón de Registrar
+        btn_register = Button(text='Registrar',
+                              on_press=self.on_register_press,
+                              size_hint=(None, None),
+                              height=dp(40))
+        # Establecer el color de fondo a negro
+        btn_register.background_color = (0, 0, 0, 1)  # Negro (RGBA)
+        # Establecer el color del texto a verde
+        btn_register.color = (0.494, 0.851, 0.341, 1)  # Verde (RGBA)
+        buttons_layout.add_widget(btn_register)
+
+        # Botón de Cerrar
+        btn_close = Button(text='Cerrar',
+                           on_press=self.on_close_press,
+                           size_hint=(None, None),
+                           height=dp(40))
+
+        # Establecer el color de fondo a negro
+        btn_close.background_color = (0, 0, 0, 1)  # Negro (RGBA)
+        # Establecer el color del texto a verde
+        btn_close.color = (0.494, 0.851, 0.341, 1)  # Verde (RGBA)
+        buttons_layout.add_widget(btn_close)
         self.add_widget(buttons_layout)
 
     def on_register_press(self, instance):
@@ -73,16 +91,22 @@ class RegistrationWindow(BoxLayout):
 
         if password != repassword:
             self.mostrar_popup("Las contraseñas no coinciden")
-
-        elif username == '' or lastname == '' or email == '' or password == '' or repassword == '':
+        elif not email or '@' not in email:
+            self.mostrar_popup("Ingrese un correo electrónico válido")
+        elif not username or not lastname or not email or not password or not repassword:
             self.mostrar_popup("Por favor complete todos los campos")
-
+        elif any(char.isdigit() for char in username) or any(char.isdigit() for char in lastname):
+            self.mostrar_popup("Los campos de nombre y apellidos\n"
+                               "no pueden contener números")
+        elif any(char.isspace() for char in username)  or any(char.isspace() for char in email) or any(char.isspace() for char in password):
+            self.mostrar_popup("Los campos no pueden contener espacios en blanco")
+        elif len(password) < 6:
+            self.mostrar_popup("La contraseña debe tener al menos 6 caracteres")
         else:
-            registrar(username,lastname,email,password)
+            registrar(username, lastname, email, password)
             self.mostrar_popup("Usuario registrado correctamente")
             App.get_running_app().stop()
             Login().run()
-
     def on_close_press(self, instance):
         App.get_running_app().stop()
         Login().run()
@@ -138,15 +162,46 @@ class Login(App):
         center_layout.add_widget(password_input)
 
         # Botón de aceptar
-        btn_accept = Button(text='Aceptar', on_press=self.on_button_press, size_hint=(None, None), pos_hint={'center_x': 0.25, 'center_y': 0.5 - img_spacing - 2 * input_spacing}, size=(dp(150), dp(40)))
+        btn_accept = Button(text='Aceptar',
+                            on_press=self.on_button_press,
+                            size_hint=(None, None),
+                            pos_hint={'center_x': 0.25, 'center_y': 0.5 - img_spacing - 2 * input_spacing},
+                            size=(dp(150), dp(40)))
+
+        # Establecer el color de fondo a negro
+        btn_accept.background_color = (0, 0, 0, 1)  # Negro (RGBA)
+
+        # Establecer el color del texto a verde
+        btn_accept.color = (0.494, 0.851, 0.341, 1)  # Verde (RGBA)
+
         center_layout.add_widget(btn_accept)
 
         # Botón de registrar
-        btn_register = Button(text='Registrar', on_press=self.on_register_press, size_hint=(None, None), pos_hint={'center_x': 0.75, 'center_y': 0.5 - img_spacing - 2 * input_spacing}, size=(dp(150), dp(40)))
+        btn_register = Button(text='Registrar',
+                              on_press=self.on_register_press,
+                              size_hint=(None, None),
+                              pos_hint={'center_x': 0.75, 'center_y': 0.5 - img_spacing - 2 * input_spacing},
+                              size=(dp(150), dp(40)))
+
+        # Establecer el color de fondo a negro
+        btn_register.background_color = (0, 0, 0, 1)  # Negro (RGBA)
+
+        # Establecer el color del texto a verde
+        btn_register.color = (0.494, 0.851, 0.341, 1)  # Verde (RGBA)
+
         center_layout.add_widget(btn_register)
 
         # Botón de salir
-        btn_exit = Button(text='Salir', on_press=self.on_exit_press, size_hint=(None, None), pos_hint={'right': 1, 'bottom': 1}, size=(dp(80), dp(30)))
+        btn_exit = Button(text='Salir',
+                          on_press=self.on_exit_press,
+                          size_hint=(None, None),
+                          pos_hint={'right': 1, 'bottom': 1},
+                          size=(dp(80), dp(30)))
+
+        # Establecer el color de fondo a negro
+        btn_exit.background_color = (0, 0, 0, 1)  # Negro (RGBA)
+        # Establecer el color del texto a verde
+        btn_exit.color = (0.494, 0.851, 0.341, 1)  # Verde (RGBA)
         layout.add_widget(btn_exit)
 
         layout.add_widget(center_layout)
@@ -157,7 +212,12 @@ class Login(App):
         # Acción a realizar cuando se presiona el botón "Registrar"
         # Crear y mostrar la ventana de registro
         registration_window = RegistrationWindow()
-        popup = Popup(title='Registro de usuario', content=registration_window, size_hint=(None, None), size=(dp(500), dp(500),))
+        popup = Popup(title='Registro de usuario', content=registration_window, size_hint=(None, None), size=(dp(500), dp(500)))
+
+        # Ajustar el estilo del popup
+        popup.background_color = [0.49411764705882355, 0.8509803921568627, 0.3411764705882353, 1]  # Fondo verde
+        popup.title_color = [1, 1, 1, 1]  # Color del texto del título (blanco)
+        popup.separator_color = [1, 1, 1, 1]  # Color del separador (blanco)
         popup.open()
 
     def on_button_press(self, instance):
