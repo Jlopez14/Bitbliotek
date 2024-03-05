@@ -260,8 +260,8 @@ class Musica(App):
         container_layout.add_widget(spacer_widget)
         container_layout.add_widget(self.data_layout)
 
-        scroll_view = CustomScrollView(size_hint=(1, None), do_scroll_x=False, size=(350, total_rows_height-10),
-                                       pos_hint={'center_x': 0.5, 'center_y': 0.42}, scroll_y=1)
+        scroll_view = CustomScrollView(size_hint=(1, None), do_scroll_x=False, size=(350, 500),
+                                       pos_hint={'center_x': 0.5, 'center_y': 0.45}, scroll_y=1)
         scroll_view.add_widget(container_layout)
 
         root_layout.add_widget(scroll_view)
