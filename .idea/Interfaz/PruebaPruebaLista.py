@@ -162,7 +162,7 @@ class Musica(App):
         self.conexion = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="lopez",
+            password="pablo2",
             database="bitbliotek",
         )
         self.cursor = self.conexion.cursor()
@@ -225,7 +225,7 @@ class Musica(App):
         total_rows_height = total_rows * row_height + 10
 
         self.data_layout = GridLayout(cols=len(column_names) + 1, size_hint_y=None, height=total_rows_height,
-                                      pos_hint={'top': 0.54})
+                                      pos_hint={'top': 0.56})
 
         # Guarda una copia sin filtrar de los resultados para poder aplicar el filtro más adelante
         self.filtered_resultados = self.resultados.copy()
@@ -251,7 +251,7 @@ class Musica(App):
             orientation='vertical',
             size_hint_y=None,
             height=self.data_layout.height + header_layout.height,
-            spacing=20,
+            spacing=0,
             padding=(20, 20)
         )
 
@@ -260,8 +260,8 @@ class Musica(App):
         container_layout.add_widget(spacer_widget)
         container_layout.add_widget(self.data_layout)
 
-        scroll_view = CustomScrollView(size_hint=(1, None), do_scroll_x=False, size=(400, total_rows_height),
-                                       pos_hint={'center_x': 0.5, 'center_y': 0.50}, scroll_y=0)
+        scroll_view = CustomScrollView(size_hint=(1, None), do_scroll_x=False, size=(350, total_rows_height-10),
+                                       pos_hint={'center_x': 0.5, 'center_y': 0.42}, scroll_y=1)
         scroll_view.add_widget(container_layout)
 
         root_layout.add_widget(scroll_view)

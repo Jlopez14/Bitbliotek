@@ -55,6 +55,7 @@ class Inicio(App):
                          border=(1, 0, 1, 0),
                          background_normal='musica.png',  # Nombre de la imagen de fondo normal
                          background_down='musicaPresionada.png')
+        button1.bind(on_press=self.on_press_music)
 
         button2 = Button(size_hint=(1/3, 0.7),
                          background_color=(0.53, 0.86, 0.83, 1),
@@ -138,6 +139,12 @@ class Inicio(App):
         from Ventana1 import Login
         login_instance = Login()
         login_instance.run()
+
+    def on_press_music(self,instance):
+        App.get_running_app().stop()
+        from PruebaPruebaLista import Musica
+        musica_instance = Musica()
+        musica_instance.run()
 
         
 if __name__ == '__main__':
