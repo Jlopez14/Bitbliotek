@@ -27,7 +27,6 @@ class RegistrationWindow(BoxLayout):
         self.orientation = 'vertical'
         self.padding = (dp(20), dp(2))
 
-
         # Mueve la ventana emergente un poco más arriba
         self.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
 
@@ -107,6 +106,7 @@ class RegistrationWindow(BoxLayout):
             self.mostrar_popup("Usuario registrado correctamente")
             App.get_running_app().stop()
             Login().run()
+
     def on_close_press(self, instance):
         App.get_running_app().stop()
         Login().run()
@@ -225,7 +225,6 @@ class Login(App):
         # Acción a realizar cuando se presiona el botón "Aceptar"
         user_text = instance.parent.children[3].text  # Obtener el texto del campo de usuario
         password_text = instance.parent.children[2].text  # Obtener el texto del campo de contraseña
-
 
         contrasenna = obtener_contrasena(user_text)
         id_usuario = obtenerID(user_text)  # Obtener el ID del usuario

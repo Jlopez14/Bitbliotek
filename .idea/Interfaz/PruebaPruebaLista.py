@@ -14,6 +14,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner
+from kivy.graphics import Color, Rectangle
 
 class ImageButton(ButtonBehavior, Image):
     pass
@@ -25,12 +26,19 @@ class CustomScrollView(ScrollView):
 class EditPopup(Popup):
     def __init__(self, data, connection, cursor, refresh_callback, **kwargs):
         super(EditPopup, self).__init__(**kwargs)
-        self.title = "Editar Fila"
-        self.size_hint = (0.8, 0.8)
+        self.title = "Editar Canción"
+        self.size_hint=(None, None)
+        self.size=(dp(500), dp(500))
         self.data = data
         self.connection = connection
         self.cursor = cursor
         self.refresh_callback = refresh_callback
+
+        # Ajustar el estilo del popup
+        self.background_color = [0.49411764705882355, 0.8509803921568627, 0.3411764705882353, 1]  # Fondo verde
+        self.title_color = [1, 1, 1, 1]  # Color del texto del título (blanco)
+        self.separator_color = [1, 1, 1, 1]  # Color del separador (blanco)
+
 
         layout = BoxLayout(orientation='vertical')
 
@@ -43,6 +51,7 @@ class EditPopup(Popup):
                     text=str(data[idx + 1]),
                     values=[str(i) for i in range(1, 6)],
                     size_hint=(None, 1),
+                    pos_hint={'right': 0.55},
                     width=50
                 )
                 layout.add_widget(label)
@@ -78,6 +87,65 @@ class EditPopup(Popup):
         self.dismiss()
         self.refresh_callback()  # Llama al callback para actualizar los datos y la interfaz
 
+class RegistroPopup(Popup):
+    def __init__(self, connection, cursor, refresh_callback, **kwargs):
+        super(RegistroPopup, self).__init__(**kwargs)
+        self.title = "Registrar Nueva Canción"
+        self.size_hint = (None, None)
+        self.size = (dp(500), dp(500))
+        self.connection = connection
+        self.cursor = cursor
+        self.refresh_callback = refresh_callback
+
+        # Ajustar el estilo del popup
+        self.background_color = [0.49411764705882355, 0.8509803921568627, 0.3411764705882353, 1]  # Fondo verde
+        self.title_color = [1, 1, 1, 1]  # Color del texto del título (blanco)
+        self.separator_color = [1, 1, 1, 1]  # Color del separador (blanco)
+
+        layout = BoxLayout(orientation='vertical')
+
+        # Crea los widgets de formulario
+        self.input_widgets = []
+        for idx, col_name in enumerate(column_names[1:]):
+            label = Label(text=col_name)
+            if col_name.lower() == 'rating':
+                spinner = Spinner(
+                    text='0',
+                    values=[str(i) for i in range(6)],
+                    size_hint=(None, 1),
+                    pos_hint={'right': 0.55},
+                    width=50
+                )
+                layout.add_widget(label)
+                layout.add_widget(spinner)
+                self.input_widgets.append(spinner)
+            else:
+                input_text = TextInput(multiline=False)
+                layout.add_widget(label)
+                layout.add_widget(input_text)
+                self.input_widgets.append(input_text)
+
+        save_button = Button(text="Guardar Canción", on_press=self.save_song)
+        layout.add_widget(save_button)
+
+        self.content = layout
+
+    def save_song(self, instance):
+        # Obtener los valores ingresados por el usuario
+        values = [input_widget.text if isinstance(input_widget, TextInput) else input_widget.text for input_widget in self.input_widgets]
+
+        # Insertar la nueva canción en la base de datos
+        insert_query = f"INSERT INTO musica ({', '.join(column_names[1:])}) VALUES ({', '.join(['%s' for _ in range(len(column_names)-1)])})"
+        try:
+            self.cursor.execute(insert_query, values)
+            self.connection.commit()
+            print("Canción registrada exitosamente.")
+        except Exception as e:
+            print(f"Error al registrar la canción: {e}")
+
+        self.dismiss()
+        self.refresh_callback()  # Actualizar la interfaz
+
 class Musica(App):
     def __init__(self, **kwargs):
         super(Musica, self).__init__(**kwargs)
@@ -94,7 +162,7 @@ class Musica(App):
         self.conexion = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="pablo2",
+            password="lopez",
             database="bitbliotek",
         )
         self.cursor = self.conexion.cursor()
@@ -124,14 +192,26 @@ class Musica(App):
             hint_text='Buscar...',
             multiline=False,
             size_hint=(None, None),
-            size=(200, 50),
-            pos_hint={'right': 0.85, 'top': 0.95}  # Ajusta los valores según tu preferencia
+            size=(210, 38),
+            pos_hint={'right': 0.86, 'top': 0.75}  # Ajusta los valores según tu preferencia
         )
         search_input.bind(text=self.filter_results)
         root_layout.add_widget(search_input)
 
+        # Botón de Registrar
+        btn_register = Button(text='Añadir',
+                              on_press=self.anadir_press,
+                              size_hint=(None, None),
+                              height=dp(39),
+                              pos_hint={'right': 0.92, 'top': 0.75})
+        # Establecer el color de fondo a negro
+        btn_register.background_color = (0, 0, 0, 1)  # Negro (RGBA)
+        # Establecer el color del texto a verde
+        btn_register.color = (0.494, 0.851, 0.341, 1)  # Verde (RGBA)
+        root_layout.add_widget(btn_register)
+
         header_scroll_view = CustomScrollView(size_hint=(1, None), do_scroll_x=False, size=(400, 60),
-                                              pos_hint={'center_x': 0.52, 'top': 0.88}, scroll_y=0)
+                                              pos_hint={'center_x': 0.52, 'top': 0.72}, scroll_y=0)
 
         header_layout = BoxLayout(size_hint=(1, None), spacing=35, height=60, padding=(0, 10))
         for col_name in column_names[1:]:
@@ -158,9 +238,11 @@ class Musica(App):
                 label = Label(text=str(dato), size_hint_y=None, height=row_height, color=(0, 0, 0, 1))
                 self.data_layout.add_widget(label)
 
-            image_button1 = ImageButton(source='IGUARDAR.png', size_hint_y=None, height=row_height, width=50)
+            image_button1 = ImageButton(source='pabloreal.png', size_hint_y=None, height=row_height, width=50, size=(23,23))
             image_button2 = ImageButton(source='IMODIFICAR.png', size_hint_y=None, height=row_height, width=50)
             image_button2.bind(on_release=lambda btn, row_id=idx: self.edit_row(row_id))
+
+            image_button1.bind(on_release=lambda btn, row_id=idx: self.delete_row(row_id))  # Asociar la función de eliminación al botón
 
             self.data_layout.add_widget(image_button1)
             self.data_layout.add_widget(image_button2)
@@ -169,7 +251,7 @@ class Musica(App):
             orientation='vertical',
             size_hint_y=None,
             height=self.data_layout.height + header_layout.height,
-            spacing=10,
+            spacing=20,
             padding=(20, 20)
         )
 
@@ -179,7 +261,7 @@ class Musica(App):
         container_layout.add_widget(self.data_layout)
 
         scroll_view = CustomScrollView(size_hint=(1, None), do_scroll_x=False, size=(400, total_rows_height),
-                                       pos_hint={'center_x': 0.5, 'center_y': 0.54}, scroll_y=0)
+                                       pos_hint={'center_x': 0.5, 'center_y': 0.50}, scroll_y=0)
         scroll_view.add_widget(container_layout)
 
         root_layout.add_widget(scroll_view)
@@ -189,16 +271,94 @@ class Musica(App):
         exit_button.bind(on_press=self.close_app)
         root_layout.add_widget(exit_button)
 
+        # Implementación del código proporcionado
+        label_layout = RelativeLayout(size_hint=(None, None), size=(dp(180), dp(36)), pos_hint={'top': 0.96, 'right': 0.96})
+
+        label = Label(text="Portugordo", size_hint=(None, None), size=(dp(144), dp(36)),
+                      pos_hint={'top': 1, 'right': 0.5}, color=(0, 1, 0, 1), font_size='18sp',
+                      halign='right', valign='middle', text_size=(dp(144), None))
+
+        with label_layout.canvas.before:
+            Color(0.1, 0.1, 0.1, 1)
+            Rectangle(pos=label.pos, size=label.size)
+
+        label_layout.add_widget(label)
+
+        button = Button(size_hint=(None, None), size=(dp(40), dp(40)), pos_hint={'right': 1, 'top': 1},
+                        background_normal='cerral.png')
+        button.bind(on_press=self.on_close_press)
+        label_layout.add_widget(button)
+
+        root_layout.add_widget(label_layout)
+
         return root_layout
+
+    def on_close_press(self, instance):
+        pass
 
     def close_app(self, instance):
         App.get_running_app().stop()
 
     def edit_row(self, row_id):
         data = self.filtered_resultados[row_id]
-        original_row_index = self.resultados.index(data)  # Obtener el índice en la lista original
+        original_row_index = self.resultados.index(data)
         edit_popup = EditPopup(data, self.conexion, self.cursor, self.refresh_data)
         edit_popup.open()
+
+    # Dentro del método delete_row de la clase Musica
+
+    def delete_row(self, row_id):
+        data = self.filtered_resultados[row_id]
+        original_row_index = self.resultados.index(data)
+
+        # Popup de confirmación de eliminación
+        confirmation_popup = Popup(title='Confirmar Eliminación',
+                                   size_hint=(None, None), size=(400, 112))
+
+        # Contenedor para los botones
+        button_layout = BoxLayout(orientation='horizontal', size_hint=(None, None), size=(400, 50), spacing=177)
+
+        # Botón para confirmar la eliminación
+        btn_confirm_delete = Button(text='Sí', size_hint=(None, None), size=(100, 50))
+        btn_confirm_delete.bind(on_press=lambda btn: self.confirm_delete(row_id, confirmation_popup))
+
+        # Botón para cancelar la eliminación
+        btn_cancel_delete = Button(text='No', size_hint=(None, None), size=(100, 50))
+        btn_cancel_delete.bind(on_press=confirmation_popup.dismiss)
+
+        # Agregar los botones al layout
+        button_layout.add_widget(btn_confirm_delete)
+        button_layout.add_widget(btn_cancel_delete)
+
+        # Agregar el layout de botones al contenido del popup de confirmación
+        confirmation_popup.content = button_layout
+
+        # Mostrar el popup de confirmación
+        confirmation_popup.open()
+
+
+
+    def confirm_delete(self, row_id, confirmation_popup):
+        data = self.filtered_resultados[row_id]
+        print("Data:", data)  # Agregar este mensaje para verificar los datos
+        original_row_index = self.resultados.index(data)
+        print("Original row index:", original_row_index)  # Agregar este mensaje para verificar el índice del registro
+
+        # Eliminar el registro de la base de datos
+        delete_query = "DELETE FROM musica WHERE idCancion = %s"
+        try:
+            self.cursor.execute(delete_query, (data[0],))  # data[0] es el id del registro
+            self.conexion.commit()  # Confirmar la eliminación
+            print("Registro eliminado exitosamente.")
+        except Exception as e:
+            print(f"Error al eliminar el registro: {e}")
+
+        # Cerrar el popup de confirmación
+        confirmation_popup.dismiss()
+
+        # Actualizar la interfaz
+        self.refresh_data()
+
 
     def refresh_data(self):
         consulta = "SELECT * FROM musica"
@@ -226,14 +386,20 @@ class Musica(App):
                 label = Label(text=str(dato), size_hint_y=None, height=26, color=(0, 0, 0, 1))
                 self.data_layout.add_widget(label)
 
-            image_button1 = ImageButton(source='IGUARDAR.png', size_hint_y=None, height=26, width=50)
+            image_button1 = ImageButton(source='pabloreal.png', size_hint_y=None, height=26, width=50,size=(23,23))
             image_button2 = ImageButton(source='IMODIFICAR.png', size_hint_y=None, height=26, width=50)
             image_button2.bind(on_release=lambda btn, row_id=idx: self.edit_row(row_id))
+
+            image_button1.bind(on_release=lambda btn, row_id=idx: self.delete_row(row_id))  # Asociar la función de eliminación al botón
 
             self.data_layout.add_widget(image_button1)
             self.data_layout.add_widget(image_button2)
 
         self.data_layout.height = len(self.filtered_resultados) * 26 + 10
+
+    def anadir_press(self, instance):
+        registro_popup = RegistroPopup(self.conexion, self.cursor, self.refresh_data)
+        registro_popup.open()
 
 if __name__ == "__main__":
     Musica().run()
