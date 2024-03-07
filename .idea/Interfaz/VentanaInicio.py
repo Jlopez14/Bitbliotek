@@ -132,7 +132,7 @@ class Inicio(App):
         App.get_running_app().stop()
 
     def on_close_press(self, instance):
-        
+
         App.get_running_app().stop()  # Cierra la ventana actual
 
         # Método para cerrar la ventana actual y volver a la ventana de inicio
@@ -141,11 +141,24 @@ class Inicio(App):
         login_instance.run()
 
     def on_press_music(self,instance):
-        App.get_running_app().stop()
-        from PruebaPruebaLista import Musica
-        musica_instance = Musica()
-        musica_instance.run()
+        try:
+            App.get_running_app().stop()
+            from PruebaPruebaLista import Musica
 
-        
+            # Añadir mensajes de depuración
+            print("Abriendo la ventana de música...")
+            print("ID de usuario:", self.id)
+
+            # Intentar crear la instancia de la ventana de música
+            musica_instance = Musica(id_usuario=self.id)
+            print("Instancia de Musica creada")
+
+            # Intentar ejecutar la ventana de música
+            musica_instance.run()
+            print("Ventana de música ejecutándose")
+        except Exception as e:
+            print("Error al abrir la ventana de música:", str(e))
+
+
 if __name__ == '__main__':
     Inicio().run()
