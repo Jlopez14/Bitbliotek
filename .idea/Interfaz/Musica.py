@@ -338,11 +338,14 @@ class Musica(App):
 
         label_layout.add_widget(label)
 
-        button = Button(size_hint=(None, None), size=(dp(40), dp(36)), pos_hint={'right': 1, 'top': 1},
-                        background_normal='volvel.png')
+        button = Button(size_hint=(None, None), size=(dp(68), dp(68)), pos_hint={'right': 1.15, 'top': 1.40})
         button.bind(on_press=self.on_close_press)
-        label_layout.add_widget(button)
 
+        # Ajusta la ruta de la imagen según sea necesario
+        button.background_normal = 'volver.png'
+        button.background_size = (dp(100), dp(100))  # Ajusta el tamaño de la imagen según tus preferencias
+
+        label_layout.add_widget(button)
         root_layout.add_widget(label_layout)
 
         return root_layout
@@ -480,4 +483,4 @@ class Musica(App):
         self.data_layout.height = len(self.filtered_resultados) * 26 + 10
 
 if __name__ == "__main__":
-    Musica(id_usuario=1).run()
+    Musica().run()
