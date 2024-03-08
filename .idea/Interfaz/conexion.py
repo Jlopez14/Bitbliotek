@@ -2,9 +2,9 @@ import mysql.connector
 
 # Configuración de la conexión a la base de datos
 configuracion_db = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'lopez',
+    'host': '79.116.29.226',
+    'user': 'remote',
+    'password': '1234',
     'database': 'bitbliotek'
 }
 

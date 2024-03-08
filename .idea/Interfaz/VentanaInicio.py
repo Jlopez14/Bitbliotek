@@ -143,7 +143,7 @@ class Inicio(App):
     def on_press_music(self,instance):
         try:
             App.get_running_app().stop()
-            from PruebaPruebaLista import Musica
+            from Musica import Musica
 
             # Añadir mensajes de depuración
             print("Abriendo la ventana de música...")

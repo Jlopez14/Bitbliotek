@@ -16,6 +16,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner
 from kivy.graphics import Color, Rectangle
 from conexion import obtenerNombre
+from datetime import date
 
 class ImageButton(ButtonBehavior, Image):
     pass
@@ -29,7 +30,7 @@ class EditPopup(Popup):
         super(EditPopup, self).__init__(**kwargs)
         self.title = "Editar Canción"
         self.size_hint = (None, None)
-        self.size = (dp(500), dp(500))
+        self.size = (dp(700), dp(700))
         self.data = data
         self.connection = connection
         self.cursor = cursor
@@ -59,6 +60,13 @@ class EditPopup(Popup):
                 layout.add_widget(label)
                 layout.add_widget(spinner)
                 self.input_widgets.append(spinner)
+
+            elif col_name.lower() == 'fechalectura':
+                date_input_with_dash = TextInput(multiline=False, readonly=False, text=str(col_value))
+                layout.add_widget(label)
+                layout.add_widget(date_input_with_dash)
+                self.input_widgets.append(date_input_with_dash)
+
             elif col_name.lower() == 'idusuario':
                 input_text = TextInput(text=str(col_value), multiline=False, readonly=True)
                 layout.add_widget(label)
@@ -80,43 +88,47 @@ class EditPopup(Popup):
 
         for input_widget, col_name in zip(self.input_widgets, self.column_names[1:]):
             if col_name.lower() == 'rating':
-                updated_values.append(int(input_widget.text))
+                try:
+                    updated_values.append(int(input_widget.text))
+                except ValueError:
+                    print(f"Error: El valor '{input_widget.text}' no es un número entero válido.")
+                    updated_values.append(None)  # Otra opción es manejar este caso de manera específica para tu aplicación
+            elif col_name.lower() == 'fechalectura':
+                # Verificar si hay guiones en la fecha
+                if '-' in input_widget.text:
+                    # Si hay guiones, quitarlos antes de agregar al resultado
+                    updated_values.append(input_widget.text.replace("-", ""))
+                else:
+                    updated_values.append(input_widget.text)
             else:
                 updated_values.append(input_widget.text)
 
         # Crear una cadena con los nombres de las columnas y sus valores para la actualización
-        update_query = f"UPDATE musica SET {', '.join([f'{col_name} = %s' for col_name in self.column_names[1:]])} WHERE idCancion = %s AND idUsuario = %s"
+        update_query = f"UPDATE libros SET {', '.join([f'{col_name} = %s' for col_name in self.column_names[1:]])} WHERE idlibros = %s AND idusuario = %s"
 
-
-
-
-        print(f"Longitud de updated_values: {len(updated_values)}")
-        print(f"Consulta de actualización: {update_query}")
-        print(f"Valores actualizados: {updated_values + [self.data[0], self.data[1]]}")
 
         try:
             # Utilizar la función execute con la tupla de valores actualizados
-            self.cursor.execute(update_query, tuple(updated_values + [self.data[0], self.data[5]]))
+            self.cursor.execute(update_query, tuple(updated_values + [self.data[0], self.data[7]]))
+
             self.connection.commit()
             print("Fila actualizada exitosamente.")
         except Exception as e:
             print(f"Error al actualizar la fila: {e}")
 
-        # Imprimir información adicional para identificar el problema
-        print(f"Columnas: {self.column_names[1:]}")
-        print(f"Valores de la fila original: {self.data}")
-        print(f"Valores actualizados: {updated_values}")
-
         self.dismiss()
         self.refresh_callback()  # Llama al callback para actualizar los datos y la interfaz
+
+
+
 
 
 class RegistroPopup(Popup):
     def __init__(self, connection, cursor, refresh_callback, id_usuario, column_names, **kwargs):
         super(RegistroPopup, self).__init__(**kwargs)
-        self.title = "Registrar Nueva Canción"
+        self.title = "Registrar Nuevo Libro"
         self.size_hint = (None, None)
-        self.size = (dp(500), dp(500))
+        self.size = (dp(700), dp(700))
         self.connection = connection
         self.cursor = cursor
         self.id_usuario = id_usuario
@@ -152,24 +164,41 @@ class RegistroPopup(Popup):
                 layout.add_widget(input_text)
                 self.input_widgets.append(input_text)
 
+            elif col_name.lower() == 'fechalectura':
+                date_input_with_dash = TextInput(multiline=False, readonly=False, text=self.get_current_date_with_dash())
+                layout.add_widget(label)
+                layout.add_widget(date_input_with_dash)
+                self.input_widgets.append(date_input_with_dash)
+
             else:
                 input_text = TextInput(multiline=False)
                 layout.add_widget(label)
                 layout.add_widget(input_text)
                 self.input_widgets.append(input_text)
 
-        save_button = Button(text="Guardar Canción", on_press=self.save_song)
+        save_button = Button(text="Guardar Libro", on_press=self.save_song)
         layout.add_widget(save_button)
 
         self.content = layout
 
+
+    def get_current_date_with_dash(self):
+        return str(date.today())
+
     def save_song(self, instance):
+        # Obtén el valor de la fecha con guiones (date_input_with_dash)
+        date_with_dash = self.input_widgets[-1].text
+
+        # Procesa la fecha para quitar los guiones antes de enviarla a la base de datos
+        date_without_dash = date_with_dash.replace("-", "")
         new_values = [input_widget.text if isinstance(input_widget, TextInput) else input_widget.text for input_widget in self.input_widgets]
 
-        # Convierte el valor de 'Rating' a un tipo numérico
-        new_values[-1] = int(new_values[-1])
+        print("Fecha con guiones:", date_with_dash)
+        print("Fecha sin guiones (para la base de datos):", date_without_dash)
 
-        insert_query = f"INSERT INTO musica ({', '.join(self.column_names[1:])}) VALUES ({', '.join(['%s'] * (len(self.column_names) - 1))})"
+
+
+        insert_query = f"INSERT INTO libros ({', '.join(self.column_names[1:])}) VALUES ({', '.join(['%s'] * (len(self.column_names) - 1))})"
 
         print(f"Longitud de new_values: {len(new_values)}")
         print(f"Consulta de inserción: {insert_query}")
@@ -186,10 +215,10 @@ class RegistroPopup(Popup):
         self.refresh_callback()  # Llama al callback para actualizar los datos y la interfaz
 
 
-class Musica(App):
+class Libros(App):
     def __init__(self, id_usuario, **kwargs):
-        super(Musica, self).__init__(**kwargs)
-        self.id_usuario = id_usuario  # Renombrar la variable a id_usuario
+        super(Libros, self).__init__(**kwargs)
+        self.id_usuario = id_usuario
         self.resultados = None
         self.filtered_resultados = None
         self.root_layout = None
@@ -202,13 +231,13 @@ class Musica(App):
         Window.show_cursor = True
 
         self.conexion = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="lopez",
+            host="79.116.29.226",
+            user="remote",
+            password="1234",
             database="bitbliotek",
         )
         self.cursor = self.conexion.cursor()
-        consulta = f"SELECT * FROM musica WHERE idUsuario = {self.id_usuario}"
+        consulta = f"SELECT * FROM libros WHERE idusuario = {self.id_usuario}"
         self.cursor.execute(consulta)
         self.resultados = self.cursor.fetchall()
         self.column_names = [i[0] for i in self.cursor.description]
@@ -271,7 +300,7 @@ class Musica(App):
 
         header_layout = BoxLayout(size_hint=(1, None), spacing=35, height=60, padding=(0, 10))
         for col_name in self.column_names[1:]:
-            header_label = Label(text=col_name, size_hint=(None, 1), width=200, color=(0, 0, 0, 1))
+            header_label = Label(text=col_name, size_hint=(None, 1), width=135, color=(0, 0, 0, 1))
             header_layout.add_widget(header_label)
         header_scroll_view.add_widget(header_layout)
         root_layout.add_widget(header_scroll_view)
@@ -330,7 +359,7 @@ class Musica(App):
 
         # Implementación del código proporcionado
         label_layout = RelativeLayout(size_hint=(None, None), size=(dp(180), dp(36)),
-                                      pos_hint={'top': 0.96, 'right': 0.96})
+                                      pos_hint={'top': 0.93, 'right': 0.96})
 
         nombre_usuario = obtenerNombre(self.id_usuario)
 
@@ -344,7 +373,7 @@ class Musica(App):
 
         label_layout.add_widget(label)
 
-        button = Button(size_hint=(None, None), size=(dp(40), dp(40)), pos_hint={'right': 1, 'top': 1},
+        button = Button(size_hint=(None, None), size=(dp(40), dp(36)), pos_hint={'right': 1, 'top': 1},
                         background_normal='cerral.png')
         button.bind(on_press=self.on_close_press)
         label_layout.add_widget(button)
@@ -354,7 +383,13 @@ class Musica(App):
         return root_layout
 
     def on_close_press(self, instance):
-        pass
+        App.get_running_app().stop()  # Cierra la ventana actual
+
+        print(self.id_usuario)
+        # Método para cerrar la ventana actual y volver a la ventana de inicio
+        from VentanaInicio import Inicio
+        Inicio(id=self.id_usuario).run()
+
 
     def close_app(self, instance):
         App.get_running_app().stop()
@@ -425,7 +460,7 @@ class Musica(App):
         self.refresh_data()
 
     def refresh_data(self):
-        consulta = f"SELECT * FROM musica WHERE idUsuario = {self.id_usuario}"
+        consulta = f"SELECT * FROM libros WHERE idusuario = {self.id_usuario}"
         self.cursor.execute(consulta)
         self.resultados = self.cursor.fetchall()
         self.filtered_resultados = self.resultados.copy()
@@ -438,6 +473,7 @@ class Musica(App):
             self.filtered_resultados = self.resultados.copy()
 
         self.refresh_ui()
+
 
     def refresh_ui(self):
         self.data_layout.clear_widgets()
@@ -476,4 +512,4 @@ class Musica(App):
         self.data_layout.height = len(self.filtered_resultados) * 26 + 10
 
 if __name__ == "__main__":
-    Musica(id_usuario=1).run()
+    Libros().run()
