@@ -87,9 +87,6 @@ class EditPopup(Popup):
         # Crear una cadena con los nombres de las columnas y sus valores para la actualización
         update_query = f"UPDATE musica SET {', '.join([f'{col_name} = %s' for col_name in self.column_names[1:]])} WHERE idCancion = %s AND idUsuario = %s"
 
-
-
-
         print(f"Longitud de updated_values: {len(updated_values)}")
         print(f"Consulta de actualización: {update_query}")
         print(f"Valores actualizados: {updated_values + [self.data[0], self.data[1]]}")
@@ -109,7 +106,6 @@ class EditPopup(Popup):
 
         self.dismiss()
         self.refresh_callback()  # Llama al callback para actualizar los datos y la interfaz
-
 
 class RegistroPopup(Popup):
     def __init__(self, connection, cursor, refresh_callback, id_usuario, column_names, **kwargs):
@@ -160,7 +156,6 @@ class RegistroPopup(Popup):
 
         save_button = Button(text="Guardar Canción", on_press=self.save_song)
         layout.add_widget(save_button)
-
         self.content = layout
 
     def save_song(self, instance):
@@ -184,7 +179,6 @@ class RegistroPopup(Popup):
 
         self.dismiss()
         self.refresh_callback()  # Llama al callback para actualizar los datos y la interfaz
-
 
 class Musica(App):
     def __init__(self, id_usuario, **kwargs):
@@ -233,7 +227,6 @@ class Musica(App):
                              pos_hint={'right': 0.77, 'top': 0.98})  # Ajusta la posición según tu preferencia
         root_layout.add_widget(search_image)
 
-
         # Agrega una barra de búsqueda
         search_input = TextInput(
             hint_text='Buscar...',
@@ -259,7 +252,8 @@ class Musica(App):
                               on_press=self.anadir_press,  # Asegúrate de que esta línea esté correctamente escrita
                               size_hint=(None, None),
                               height=dp(39),
-                              pos_hint={'right': 0.92, 'top': 0.75})
+                              pos_hint={'right': 0.960, 'top': 0.75})
+
         # Establecer el color de fondo a negro
         btn_register.background_color = (0, 0, 0, 1)  # Negro (RGBA)
         # Establecer el color del texto a verde
