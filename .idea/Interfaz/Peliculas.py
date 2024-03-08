@@ -215,9 +215,9 @@ class RegistroPopup(Popup):
         self.refresh_callback()  # Llama al callback para actualizar los datos y la interfaz
 
 
-class Libros(App):
+class Peliculas(App):
     def __init__(self, id_usuario, **kwargs):
-        super(Libros, self).__init__(**kwargs)
+        super(Peliculas, self).__init__(**kwargs)
         self.id_usuario = id_usuario
         self.resultados = None
         self.filtered_resultados = None
@@ -258,7 +258,7 @@ class Libros(App):
         root_layout.add_widget(logo_image)
 
         # Agrega una imagen encima del recuadro de búsqueda
-        search_image = Image(source='musicasinfondo.png', size_hint=(None, None), size=(300, 300),
+        search_image = Image(source='logocine.png', size_hint=(None, None), size=(300, 300),
                              pos_hint={'right': 0.77, 'top': 0.98})  # Ajusta la posición según tu preferencia
         root_layout.add_widget(search_image)
 

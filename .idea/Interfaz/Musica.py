@@ -339,7 +339,7 @@ class Musica(App):
         label_layout.add_widget(label)
 
         button = Button(size_hint=(None, None), size=(dp(40), dp(36)), pos_hint={'right': 1, 'top': 1},
-                        background_normal='cerral.png')
+                        background_normal='volvel.png')
         button.bind(on_press=self.on_close_press)
         label_layout.add_widget(button)
 
@@ -349,6 +349,10 @@ class Musica(App):
 
     def on_close_press(self, instance):
         App.get_running_app().stop()  # Cierra la ventana actual
+        # Método para cerrar la ventana actual y volver a la ventana de inicio
+        from VentanaInicio import Inicio
+        Inicio_instance = Inicio(id=self.id_usuario)
+        Inicio_instance.run()
 
         print(self.id_usuario)
         # Método para cerrar la ventana actual y volver a la ventana de inicio
@@ -476,4 +480,4 @@ class Musica(App):
         self.data_layout.height = len(self.filtered_resultados) * 26 + 10
 
 if __name__ == "__main__":
-    Musica().run()
+    Musica(id_usuario=1).run()

@@ -258,7 +258,7 @@ class Libros(App):
         root_layout.add_widget(logo_image)
 
         # Agrega una imagen encima del recuadro de búsqueda
-        search_image = Image(source='musicasinfondo.png', size_hint=(None, None), size=(300, 300),
+        search_image = Image(source='logolibros.png', size_hint=(None, None), size=(300, 300),
                              pos_hint={'right': 0.77, 'top': 0.98})  # Ajusta la posición según tu preferencia
         root_layout.add_widget(search_image)
 

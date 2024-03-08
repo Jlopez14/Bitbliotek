@@ -62,12 +62,14 @@ class Inicio(App):
                          border=(1, 0, 1, 0),
                          background_normal='pelicula.png',  # Nombre de la imagen de fondo normal
                          background_down='cinePresionado.png')
+        button2.bind(on_press=self.on_press_pelicula)
 
         button3 = Button(size_hint=(1/3, 0.7),
                          background_color=(0.53, 0.86, 0.83, 1),
                          border=(1, 0, 1, 0),
                          background_normal='libros.png',  # Nombre de la imagen de fondo normal
                          background_down='libroPresionado.png')
+        button3.bind(on_press=self.on_press_libros)
 
 
         # Añadir botones al BoxLayout
@@ -155,6 +157,44 @@ class Inicio(App):
 
             # Intentar ejecutar la ventana de música
             musica_instance.run()
+            print("Ventana de música ejecutándose")
+        except Exception as e:
+            print("Error al abrir la ventana de música:", str(e))
+
+    def on_press_libros(self,instance):
+            try:
+                App.get_running_app().stop()
+                from Libros import Libros
+
+                # Añadir mensajes de depuración
+                print("Abriendo la ventana de música...")
+                print("ID de usuario:", self.id)
+
+                # Intentar crear la instancia de la ventana de música
+                libros_instance = Libros(id_usuario=self.id)
+                print("Instancia de Musica creada")
+
+                # Intentar ejecutar la ventana de música
+                libros_instance.run()
+                print("Ventana de música ejecutándose")
+            except Exception as e:
+                print("Error al abrir la ventana de música:", str(e))
+
+    def on_press_pelicula(self,instance):
+        try:
+            App.get_running_app().stop()
+            from Peliculas import Peliculas
+
+            # Añadir mensajes de depuración
+            print("Abriendo la ventana de música...")
+            print("ID de usuario:", self.id)
+
+            # Intentar crear la instancia de la ventana de música
+            libros_instance = Peliculas(id_usuario=self.id)
+            print("Instancia de Musica creada")
+
+            # Intentar ejecutar la ventana de música
+            libros_instance.run()
             print("Ventana de música ejecutándose")
         except Exception as e:
             print("Error al abrir la ventana de música:", str(e))
