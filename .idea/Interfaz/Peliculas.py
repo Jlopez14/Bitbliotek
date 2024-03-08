@@ -482,7 +482,7 @@ class Peliculas(App):
         self.refresh_ui()
 
 
-    def refresh_ui(self):
+    def refresh_ui(self,*args):
         self.data_layout.clear_widgets()
 
         # Obtener el valor actual seleccionado en el Spinner
